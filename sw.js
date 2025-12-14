@@ -1,21 +1,13 @@
-const CACHE_NAME = 'bisc-sidekick-v1';
-const urlsToCache = [
-  './',
-  './index.html',
-  './icon.png',
-  './manifest.json'
-];
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-  );
+// A simple no-fail service worker to force PWA installation
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-  );
+self.addEventListener('activate', (e) => {
+  e.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('fetch', (e) => {
+  // Just pass the request through to the network
+  // This prevents 404 errors from stopping the installation
 });
